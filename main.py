@@ -17,14 +17,27 @@ session = Session()
 create_tables(engine) # создание таблиц
 add_data() # добавление данных.
 
-text = input() 
 
-result = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).join(Publisher).join(Stock).join(Shop).join(Sale).filter(Publisher.name.like(text))
+def get_shops(text):
+    result = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).\
+        join(Publisher).\
+        join(Stock).\
+        join(Shop).\
+        join(Sale)
+    
+    if text.isdigit():
+        result = result.filter(Publisher.id == text).all()
+    else:
+        result = result.filter(Publisher.name == text).all()
 
-for i in result:
-    print(f'{i[0]} | {i[1]} | {i[2]} | {i[3]}')
+    for i in result:
+        print(f'{i[0]} | {i[1]} | {i[2]} | {i[3]}')
 
-session.close()    
+session.close()   
+ 
 
+if __name__ == '__main__':
+    text = input()
+    get_shops(text)
 
 
